@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contact — Eliya Sande</title>
+<meta name="description" content="Contact Eliya Sande for websites, apps, or inquiries — call, WhatsApp, or email.">
+<meta name="theme-color" content="#0F172A">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icons/favicon-32.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <a href="index.html" class="brand"><span class="pulse"></span>Eliya Sande</a>
+    <button class="nav-toggle" aria-label="Toggle menu" aria-expanded="false">☰</button>
+    <nav class="primary-nav">
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="projects.html">Projects</a></li>
+        <li><a href="blog.html">Blog</a></li>
+        <li><a href="contact.html" aria-current="page">Contact</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="page-hero">
+    <div class="wrap">
+      <p class="eyebrow">// contact</p>
+      <h1>Need a website, an app, or just want to talk shop?</h1>
+      <p class="lede dim">I take on freelance builds and I'm always happy to hear from other developers, students, or potential clients. Reach me however works best for you.</p>
+    </div>
+  </section>
+
+  <section class="wrap">
+    <div class="contact-grid">
+      <div class="contact-card">
+        <div class="icon">☎</div>
+        <h3>Call</h3>
+        <p class="dim" style="margin-bottom:0;">Fastest way to reach me directly.</p>
+        <a href="tel:+254714104737">0714 104 737</a>
+      </div>
+      <div class="contact-card">
+        <div class="icon">✉</div>
+        <h3>Email</h3>
+        <p class="dim" style="margin-bottom:0;">For project briefs and longer messages.</p>
+        <a href="mailto:eliyasande65@gmail.com">eliyasande65@gmail.com</a>
+      </div>
+      <div class="contact-card">
+        <div class="icon">◆</div>
+        <h3>WhatsApp</h3>
+        <p class="dim" style="margin-bottom:0;">Chat with me directly, no forms needed.</p>
+        <a href="https://wa.me/254714104737" target="_blank" rel="noopener">Chat on WhatsApp</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap">
+    <div class="section-head">
+      <h2>Send a message</h2>
+      <span class="section-num">optional</span>
+    </div>
+    <form class="inquiry" onsubmit="return false;">
+      <div>
+        <label for="name">Your name</label>
+        <input type="text" id="name" name="name" placeholder="Jane Wanjiru" required>
+      </div>
+      <div>
+        <label for="email">Your email</label>
+        <input type="email" id="email" name="email" placeholder="you@example.com" required>
+      </div>
+      <div>
+        <label for="message">What do you need?</label>
+        <textarea id="message" name="message" rows="5" placeholder="Tell me about your website, app, or inquiry..." required></textarea>
+      </div>
+      <div>
+        <button type="button" class="btn btn-primary" id="sendMessageBtn">Send via email</button>
+      </div>
+      <p class="form-note">This opens your email app pre-filled with your message, addressed to eliyasande65@gmail.com. Prefer WhatsApp or a call? Use the options above.</p>
+    </form>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <span class="copy">© 2026 Eliya Sande · Busia County, Kenya</span>
+    <div class="foot-links">
+      <a href="mailto:eliyasande65@gmail.com">Email</a>
+      <a href="https://wa.me/254714104737" target="_blank" rel="noopener">WhatsApp</a>
+      <a href="tel:+254714104737">Call</a>
+    </div>
+  </div>
+</footer>
+
+<div class="install-banner" id="installBanner">
+  <p>Install this site as an app for quick offline access.</p>
+  <button class="btn btn-primary" id="installBtn">Install</button>
+  <button class="install-dismiss" id="installDismiss" aria-label="Dismiss">✕</button>
+</div>
+
+<script src="js/main.js"></script>
+</body>
+</html>

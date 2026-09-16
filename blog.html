@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blog — Eliya Sande</title>
+<meta name="description" content="Notes on coding, telecom engineering, and building products by Eliya Sande.">
+<meta name="theme-color" content="#0F172A">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icons/favicon-32.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <a href="index.html" class="brand"><span class="pulse"></span>Eliya Sande</a>
+    <button class="nav-toggle" aria-label="Toggle menu" aria-expanded="false">☰</button>
+    <nav class="primary-nav">
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="projects.html">Projects</a></li>
+        <li><a href="blog.html" aria-current="page">Blog</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="page-hero">
+    <div class="wrap">
+      <p class="eyebrow">// blog</p>
+      <h1>Notes from the build.</h1>
+      <p class="lede dim">Short write-ups on what I'm learning — telecom engineering, shipping side projects, and working with AI tools as a developer.</p>
+    </div>
+  </section>
+
+  <section class="wrap">
+    <div class="post-full" id="post-1">
+      <div class="date mono">March 2026</div>
+      <h2>Why I built QejaConnect</h2>
+      <p>QejaConnect started as a simple question: why is it still hard for people to find and reach the services around them? I wanted to build something that closed that gap directly, without unnecessary steps in between.</p>
+      <p>The early version was rough — a handful of pages and a lot of manual testing on my own phone. What mattered most wasn't polish, it was getting it in front of real users early and letting their feedback shape what came next. That's still how I build today: ship the smallest useful version, then improve it in public.</p>
+      <p class="dim">Read more about the platform on the <a href="projects.html">projects page</a>, or try it live at <a href="https://qejaconnect.co.ke" target="_blank" rel="noopener">qejaconnect.co.ke</a>.</p>
+    </div>
+
+    <div class="post-full" id="post-2">
+      <div class="date mono">May 2026</div>
+      <h2>Building Codeforge: an AI-powered IDE in the browser</h2>
+      <p>As a student balancing coursework with side projects, I got tired of switching between a text editor, a terminal, and a browser tab for AI help. Codeforge is my answer to that — a code editor that runs in the browser with AI assistance built directly in, so writing, testing, and debugging code can happen in one place.</p>
+      <p>The hardest part wasn't the AI integration — it was making the editor itself feel fast and dependable first. AI assistance is only useful if the core editing experience doesn't get in the way. That's the lesson I keep applying: get the fundamentals solid before layering on anything clever.</p>
+      <p class="dim">Try it yourself at <a href="https://eliyasande65-lang.github.io/codeforge" target="_blank" rel="noopener">Codeforge</a>.</p>
+    </div>
+
+    <div class="post-full" id="post-3">
+      <div class="date mono">July 2026</div>
+      <h2>What telecom engineering taught me about writing software</h2>
+      <p>Studying Telecommunication and Information Engineering at JKUAT means thinking a lot about signal, noise, and reliability — how information gets from one point to another without breaking down along the way. I didn't expect it to change how I write code, but it has.</p>
+      <p>Every system I build now, I ask the same question I'd ask about a network link: where can this fail, and what happens when it does? That mindset — designing for the failure case, not just the happy path — has made every project since more resilient, from a simple contact form to a full platform like QejaConnect.</p>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <span class="copy">© 2026 Eliya Sande · Busia County, Kenya</span>
+    <div class="foot-links">
+      <a href="mailto:eliyasande65@gmail.com">Email</a>
+      <a href="https://wa.me/254714104737" target="_blank" rel="noopener">WhatsApp</a>
+      <a href="tel:+254714104737">Call</a>
+    </div>
+  </div>
+</footer>
+
+<div class="install-banner" id="installBanner">
+  <p>Install this site as an app for quick offline access.</p>
+  <button class="btn btn-primary" id="installBtn">Install</button>
+  <button class="install-dismiss" id="installDismiss" aria-label="Dismiss">✕</button>
+</div>
+
+<script src="js/main.js"></script>
+</body>
+</html>
