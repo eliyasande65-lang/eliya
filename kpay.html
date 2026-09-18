@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Broker Fee Payment - Escrow</title>
+    <style>
+        :root {
+            --primary: #0a192f;
+            --accent: #00b4d8;
+            --accent-glow: rgba(0, 180, 216, 0.2);
+            --bg: #070d1b;
+            --card-bg: rgba(17, 34, 64, 0.7);
+            --text: #e2e8f0;
+            --text-muted: #94a3b8;
+            --border: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            width: 100vw;
+            height: 100vh;
+            overflow-y: scroll;
+            background-color: var(--bg);
+            color: var(--text);
+            background-image: radial-gradient(circle at 50% 0%, #112240 0%, var(--bg) 70%);
+        }
+
+        #app {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            width: 100%;
+            max-width: 480px;
+            margin: 0 auto;
+            position: relative;
+            overflow-y: auto;
+            padding: 16px;
+        }
+
+        .head {
+            text-align: center;
+            padding: 12px 0 20px 0;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 16px;
+        }
+
+        .head h1 {
+            font-size: 1.25rem;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            color: #fff;
+            text-transform: uppercase;
+        }
+
+        .head h1 span {
+            color: var(--accent);
+        }
+
+        .summary-card {
+            background: linear-gradient(135deg, #112240 0%, #0a192f 100%);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            margin-bottom: 10px;
+            color: var(--text-muted);
+        }
+
+        .summary-row span:last-child {
+            color: #fff;
+            font-weight: 600;
+        }
+
+        .summary-total {
+            border-top: 1px solid var(--border);
+            padding-top: 10px;
+            margin-top: 10px;
+            display: flex;
+            justify-content: space-between;
+            font-size: 1rem;
+            font-weight: 800;
+            color: var(--text);
+        }
+
+        .summary-total span:last-child {
+            color: var(--accent);
+        }
+
+        .stk-box {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 16px;
+        }
+
+        .stk-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .stk-title {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 6px;
+        }
+
+        .stk-desc {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-bottom: 16px;
+        }
+
+        .btn-pay {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, var(--accent) 0%, #0077b6 100%);
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            font-weight: 800;
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            cursor: pointer;
+            box-shadow: 0 4px 20px var(--accent-glow);
+            transition: transform 0.1s ease;
+        }
+
+        .btn-pay:active {
+            transform: scale(0.98);
+        }
+
+        .btn-back {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            margin-top: 12px;
+            cursor: pointer;
+            text-align: center;
+            width: 100%;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(7, 13, 27, 0.85);
+            backdrop-filter: blur(5px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            padding: 16px;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-card {
+            background: var(--primary);
+            border: 1px solid var(--accent);
+            border-radius: 20px;
+            width: 100%;
+            max-width: 400px;
+            padding: 24px;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+        }
+
+        .modal-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--accent-glow);
+            border: 2px solid var(--accent);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px auto;
+            color: var(--accent);
+            font-size: 1.5rem;
+        }
+
+        .modal-title {
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: #fff;
+            margin-bottom: 8px;
+        }
+
+        .modal-desc {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+            line-height: 1.4;
+        }
+
+        .modal-btn {
+            width: 100%;
+            padding: 12px;
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            cursor: pointer;
+            text-transform: uppercase;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <div class="head">
+            <h1>Escrow <span>Broker Fee</span></h1>
+            <p>Complete payment to activate trade escrow</p>
+        </div>
+
+        <div class="summary-card">
+            <div class="summary-row">
+                <span>Selected Broker:</span>
+                <span id="summary-broker">ApexKahn</span>
+            </div>
+            <div class="summary-row">
+                <span>Escrow Fee Rate:</span>
+                <span id="summary-rate">1.5%</span>
+            </div>
+            <div class="summary-row">
+                <span>Payment Identifier:</span>
+                <span id="summary-account">--</span>
+            </div>
+            <div class="summary-total">
+                <span>Broker Fee Due:</span>
+                <span id="summary-fee">--</span>
+            </div>
+        </div>
+
+        <div class="stk-box">
+            <div class="stk-icon">📱</div>
+            <div class="stk-title" id="payment-method-title">M-Pesa STK Push Trigger</div>
+            <div class="stk-desc" id="payment-method-desc">Clicking pay below will dispatch an instant STK push prompt to your phone for escrow fee authentication.</div>
+            <button class="btn-pay" onclick="triggerPayment()">Authorize & Pay Fee</button>
+        </div>
+
+        <button class="btn-back" onclick="history.back()">← Return to Exchange Form</button>
+    </div>
+
+    <!-- Professional Modal -->
+    <div class="modal-overlay" id="custom-modal">
+        <div class="modal-card">
+            <div class="modal-icon" id="modal-icon">✓</div>
+            <div class="modal-title" id="modal-title">Notice</div>
+            <div class="modal-desc" id="modal-desc">Message goes here...</div>
+            <button class="modal-btn" onclick="closeModal()">Done</button>
+        </div>
+    </div>
+
+    <script>
+        let sessionData = {};
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const dataStr = localStorage.getItem('brokerPaymentSession');
+            if(dataStr) {
+                sessionData = JSON.parse(dataStr);
+                document.getElementById('summary-broker').innerText = sessionData.broker;
+                document.getElementById('summary-rate').innerText = sessionData.feePercent + '%';
+                document.getElementById('summary-account').innerText = sessionData.account;
+                document.getElementById('summary-fee').innerText = sessionData.currencySymbol + sessionData.feeAmount;
+
+                if(sessionData.method !== 'mpesa') {
+                    document.getElementById('payment-method-title').innerText = "Secure Gateway Transfer";
+                    document.getElementById('payment-method-desc').innerText = "Click below to process your broker fee payment through your chosen channel.";
+                }
+            }
+        });
+
+        function showModal(title, desc, isSuccess = true) {
+            document.getElementById('modal-title').innerText = title;
+            document.getElementById('modal-desc').innerText = desc;
+            document.getElementById('modal-icon').innerText = isSuccess ? '✓' : '!';
+            document.getElementById('custom-modal').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('custom-modal').classList.remove('active');
+        }
+
+        function triggerPayment() {
+            if(sessionData.method === 'mpesa') {
+                showModal('STK Push Dispatched', `An M-Pesa prompt has been sent to ${sessionData.account}. Enter your PIN to clear the ${sessionData.currencySymbol}${sessionData.feeAmount} escrow fee.`);
+            } else {
+                showModal('Payment Processing', `Redirecting you to secure gateway to complete ${sessionData.currencySymbol}${sessionData.feeAmount} payment.`);
+            }
+        }
+    </script>
+</body>
+</html>
