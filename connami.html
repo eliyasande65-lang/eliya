@@ -359,6 +359,85 @@
             height: 12px;
             fill: var(--accent);
         }
+
+        /* Professional Modal Popup */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(7, 13, 27, 0.85);
+            backdrop-filter: blur(5px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            padding: 16px;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-card {
+            background: var(--primary);
+            border: 1px solid var(--accent);
+            border-radius: 20px;
+            width: 100%;
+            max-width: 400px;
+            padding: 24px;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+            transform: translateY(20px);
+            transition: transform 0.3s ease;
+        }
+
+        .modal-overlay.active .modal-card {
+            transform: translateY(0);
+        }
+
+        .modal-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--accent-glow);
+            border: 2px solid var(--accent);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px auto;
+            color: var(--accent);
+            font-size: 1.5rem;
+        }
+
+        .modal-title {
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: #fff;
+            margin-bottom: 8px;
+        }
+
+        .modal-desc {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+            line-height: 1.4;
+        }
+
+        .modal-btn {
+            width: 100%;
+            padding: 12px;
+            background: var(--accent);
+            color: #000;
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            cursor: pointer;
+            text-transform: uppercase;
+        }
     </style>
 </head>
 <body>
@@ -393,6 +472,8 @@
             <select id="country-select" style="display:none;" onchange="updateCurrencySymbol()">
                 <option value="US" data-curr="$" data-rate="0.005" selected>United States (USD)</option>
                 <option value="KE" data-curr="Ksh" data-rate="4.5">Kenya (KES)</option>
+                <option value="UG" data-curr="USh" data-rate="18.5">Uganda (UGX)</option>
+                <option value="TZ" data-curr="TSh" data-rate="13.2">Tanzania (TZS)</option>
                 <option value="EU" data-curr="€" data-rate="0.0046">Eurozone (EUR)</option>
                 <option value="GB" data-curr="£" data-rate="0.0039">United Kingdom (GBP)</option>
                 <option value="BR" data-curr="R$" data-rate="0.025">Brazil (BRL)</option>
@@ -419,25 +500,25 @@
         </div>
         
         <div class="brokers-container">
-            <div class="broker-card selected" onclick="selectBroker(this)">
+            <div class="broker-card selected" onclick="selectBroker(this, 'ApexKahn', 1.5)">
                 <div class="broker-avatar">AK</div>
                 <div class="broker-name">ApexKahn</div>
                 <div class="broker-rating">★ 4.9 (1.2k)</div>
                 <div class="broker-fee">Fee: 1.5%</div>
             </div>
-            <div class="broker-card" onclick="selectBroker(this)">
+            <div class="broker-card" onclick="selectBroker(this, 'ZenithX', 1.0)">
                 <div class="broker-avatar">ZX</div>
                 <div class="broker-name">ZenithX</div>
                 <div class="broker-rating">★ 4.8 (950)</div>
                 <div class="broker-fee">Fee: 1.0%</div>
             </div>
-            <div class="broker-card" onclick="selectBroker(this)">
+            <div class="broker-card" onclick="selectBroker(this, 'NovaSwift', 2.0)">
                 <div class="broker-avatar">NS</div>
                 <div class="broker-name">NovaSwift</div>
                 <div class="broker-rating">★ 5.0 (430)</div>
                 <div class="broker-fee">Fee: 2.0%</div>
             </div>
-            <div class="broker-card" onclick="selectBroker(this)">
+            <div class="broker-card" onclick="selectBroker(this, 'PrimeTrade', 0.8)">
                 <div class="broker-avatar">PT</div>
                 <div class="broker-name">PrimeTrade</div>
                 <div class="broker-rating">★ 4.7 (2.1k)</div>
@@ -448,9 +529,9 @@
         <div class="form-group">
             <label for="payment-method">Payment Method</label>
             <div class="select-wrapper">
-                <select id="payment-method">
+                <select id="payment-method" onchange="updatePaymentPlaceholder()">
+                    <option value="mpesa">M-Pesa STK Push (Instant)</option>
                     <option value="paypal">PayPal Instant Transfer</option>
-                    <option value="mpesa">Mpesa by Safaricom </option>
                     <option value="crypto">USDT (TRC20 / ERC20)</option>
                     <option value="bank">Direct Bank Wire</option>
                     <option value="giftcard">Google Play / App Store Card</option>
@@ -459,9 +540,9 @@
         </div>
 
         <div class="form-group">
-            <label for="account-details">Payment Identifier / Account</label>
+            <label id="account-label" for="account-details">M-Pesa Phone Number</label>
             <div class="input-wrapper">
-                <input type="text" id="account-details" placeholder="Email, Crypto Wallet or IBAN">
+                <input type="text" id="account-details" placeholder="e.g., +2547XXXXXXXX / +2567XXXXXXXX">
             </div>
         </div>
 
@@ -470,10 +551,23 @@
             Protected by Escrow Guarantee & SSL Encryption
         </div>
 
-        <button class="btn-exchange" onclick="initiateExchange()">Initiate Exchange</button>
+        <button class="btn-exchange" onclick="initiateExchange()">Proceed to Broker Payment</button>
+    </div>
+
+    <!-- Professional Modal Popup -->
+    <div class="modal-overlay" id="custom-modal">
+        <div class="modal-card">
+            <div class="modal-icon" id="modal-icon">!</div>
+            <div class="modal-title" id="modal-title">Validation Error</div>
+            <div class="modal-desc" id="modal-desc">Please enter your payment details identifier.</div>
+            <button class="modal-btn" onclick="closeModal()">Got It</button>
+        </div>
     </div>
 
     <script>
+        let selectedBrokerName = 'ApexKahn';
+        let selectedBrokerFee = 1.5;
+
         // Initialize country list options for search
         document.addEventListener('DOMContentLoaded', () => {
             renderCountryList();
@@ -518,9 +612,31 @@
             renderCountryList(query);
         }
 
-        function selectBroker(element) {
+        function selectBroker(element, name, fee) {
             document.querySelectorAll('.broker-card').forEach(card => card.classList.remove('selected'));
             element.classList.add('selected');
+            selectedBrokerName = name;
+            selectedBrokerFee = fee;
+        }
+
+        function updatePaymentPlaceholder() {
+            const method = document.getElementById('payment-method').value;
+            const label = document.getElementById('account-label');
+            const input = document.getElementById('account-details');
+            
+            if(method === 'mpesa') {
+                label.innerText = "M-Pesa Phone Number";
+                input.placeholder = "e.g., +2547XXXXXXXX / +2567XXXXXXXX";
+            } else if(method === 'paypal') {
+                label.innerText = "PayPal Account Email";
+                input.placeholder = "name@example.com";
+            } else if(method === 'crypto') {
+                label.innerText = "USDT Wallet Address";
+                input.placeholder = "Enter TRC20 / ERC20 Address";
+            } else {
+                label.innerText = "Payment Identifier / Account";
+                input.placeholder = "Email, Crypto Wallet or IBAN";
+            }
         }
 
         function updateCurrencySymbol() {
@@ -534,13 +650,41 @@
             document.getElementById('currency-equiv').innerText = `${symbol}${converted} ${selectedOption.value === 'US' ? 'USD' : selectedOption.value}`;
         }
 
+        function showModal(title, desc) {
+            document.getElementById('modal-title').innerText = title;
+            document.getElementById('modal-desc').innerText = desc;
+            document.getElementById('custom-modal').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('custom-modal').classList.remove('active');
+        }
+
         function initiateExchange() {
             const account = document.getElementById('account-details').value;
             if(!account) {
-                alert('Please enter your payment details identifier.');
+                showModal('Validation Error', 'Please enter your payment details identifier.');
                 return;
             }
-            alert('Exchange request initialized successfully with the selected middle broker. Funds will be released upon eFootball coins validation.');
+
+            const select = document.getElementById('country-select');
+            const selectedOption = select.options[select.selectedIndex];
+            const rate = parseFloat(selectedOption.getAttribute('data-rate'));
+            const symbol = selectedOption.getAttribute('data-curr');
+            const baseValue = 12450 * rate;
+            const feeAmount = (baseValue * (selectedBrokerFee / 100)).toFixed(2);
+
+            const paymentData = {
+                broker: selectedBrokerName,
+                feePercent: selectedBrokerFee,
+                feeAmount: feeAmount,
+                currencySymbol: symbol,
+                account: account,
+                method: document.getElementById('payment-method').value
+            };
+
+            localStorage.setItem('brokerPaymentSession', JSON.stringify(paymentData));
+            window.location.href = 'kpay.html';
         }
     </script>
 </body>
