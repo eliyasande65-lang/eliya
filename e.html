@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Request Sender</title>
+    <style>
+        body { 
+            font-family: 'Courier New', Courier, monospace; 
+            margin: 40px; 
+            max-width: 800px; 
+            background-color: #0d1a10; 
+            color: #2ecc71; 
+        }
+        h2, h3 { color: #27ae60; text-shadow: 0 0 5px rgba(39, 174, 96, 0.4); }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; color: #2ecc71; }
+        input, select, textarea { 
+            width: 100%; 
+            padding: 8px; 
+            box-sizing: border-box; 
+            background-color: #050d08; 
+            border: 1px solid #1e4620; 
+            color: #2ecc71;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #2ecc71;
+            box-shadow: 0 0 5px rgba(46, 204, 113, 0.3);
+        }
+        textarea { height: 100px; }
+        button { 
+            padding: 10px 15px; 
+            background: #1e4620; 
+            color: #2ecc71; 
+            border: 1px solid #2ecc71; 
+            cursor: pointer; 
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: bold;
+        }
+        button:hover { background: #27ae60; color: #0d1a10; }
+        pre { 
+            background: #050d08; 
+            padding: 15px; 
+            overflow-x: auto; 
+            border: 1px solid #1e4620; 
+            color: #2ecc71;
+        }
+        .cors-toggle { margin-bottom: 15px; display: flex; align-items: center; gap: 10px; }
+        .cors-toggle input { width: auto; }
+    </style>
+</head>
+<body>
+
+    <h2>HTTP Request Sender</h2>
+    
+    <div class="form-group">
+        <label for="url">Server URL:</label>
+        <input type="text" id="url" placeholder="https://api.example.com/data">
+    </div>
+
+    <div class="form-group">
+        <label for="method">Method:</label>
+        <select id="method" onchange="toggleBody()">
+            <option value="GET">GET</option>
+            <option value="POST">POST</option>
+            <option value="PUT">PUT</option>
+            <option value="DELETE">DELETE</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="retries">Retry Attempts (until success):</label>
+        <input type="number" id="retries" value="1" min="1" max="10">
+    </div>
+
+    <div class="form-group">
+        <label for="headers">Custom Headers (JSON):</label>
+        <textarea id="headers" placeholder='{"Authorization": "Bearer token123", "X-Custom-Header": "value"}' style="height: 60px;">{}</textarea>
+    </div>
+
+    <div class="cors-toggle">
+        <input type="checkbox" id="use-proxy">
+        <label for="use-proxy" style="display:inline; margin-bottom:0;">Bypass CORS via Proxy</label>
+    </div>
+
+    <div class="form-group" id="body-group" style="display:none;">
+        <label for="body">Request Body (JSON):</label>
+        <textarea id="body" placeholder='{"key": "value"}'></textarea>
+    </div>
+
+    <button onclick="sendRequest()">Send Request</button>
+
+    <h3>Response:</h3>
+    <pre id="response">Response will appear here...</pre>
+
+    <script>
+        function toggleBody() {
+            const method = document.getElementById('method').value;
+            const bodyGroup = document.getElementById('body-group');
+            bodyGroup.style.display = ['POST', 'PUT'].includes(method) ? 'block' : 'none';
+        }
+
+        async function sendRequest() {
+            let url = document.getElementById('url').value;
+            const method = document.getElementById('method').value;
+            const bodyText = document.getElementById('body').value;
+            const headersText = document.getElementById('headers').value;
+            const maxRetries = parseInt(document.getElementById('retries').value) || 1;
+            const useProxy = document.getElementById('use-proxy').checked;
+            const responsePre = document.getElementById('response');
+
+            if (!url) {
+                alert('Please enter a URL');
+                return;
+            }
+
+            if (useProxy) {
+                url = `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`;
+            }
+
+            let customHeaders = {};
+            if (headersText.trim()) {
+                try {
+                    customHeaders = JSON.parse(headersText);
+                } catch (e) {
+                    responsePre.textContent = 'Error: Invalid JSON in Custom Headers';
+                    return;
+                }
+            }
+
+            const options = {
+                method: method,
+                headers: {
+                    'Content-Type': 'application/json',
+                    ...customHeaders
+                }
+            };
+
+            if (['POST', 'PUT'].includes(method) && bodyText) {
+                try {
+                    options.body = JSON.stringify(JSON.parse(bodyText));
+                } catch (e) {
+                    responsePre.textContent = 'Error: Invalid JSON in Request Body';
+                    return;
+                }
+            }
+
+            let attempt = 0;
+            let success = false;
+            let finalResponse = null;
+            let errorMsg = '';
+
+            while (attempt < maxRetries && !success) {
+                attempt++;
+                responsePre.textContent = `Sending request... (Attempt ${attempt}/${maxRetries})`;
+
+                try {
+                    const response = await fetch(url, options);
+                    
+                    if (!response.ok && attempt < maxRetries) {
+                        continue; // Retry if server error and attempts remain
+                    }
+
+                    const contentType = response.headers.get('content-type');
+                    let data;
+                    if (contentType && contentType.includes('application/json')) {
+                        data = await response.json();
+                        data = JSON.stringify(data, null, 2);
+                    } else {
+                        data = await response.text();
+                    }
+
+                    finalResponse = `Status: ${response.status} ${response.statusText}\nAttempts required: ${attempt}\n\n${data}`;
+                    success = true;
+                } catch (error) {
+                    errorMsg = error.message;
+                    if (attempt >= maxRetries) {
+                        break;
+                    }
+                }
+            }
+
+            if (success) {
+                responsePre.textContent = finalResponse;
+            } else {
+                responsePre.textContent = `Error after ${attempt} attempts: ${errorMsg}\n(Note: Enable "Bypass CORS via Proxy" if blocked by browser CORS restrictions)`;
+            }
+        }
+    </script>
+
+</body>
+</html>
