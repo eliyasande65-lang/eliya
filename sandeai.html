@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Make Stories AI | AI Story Chat</title>
+<meta name="description" content="Chat with Make stories ai to get stories. Use the interactive chat interface and enter your API key when requested to begin chatting and generating stories.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%20100%20100'%3E%3Ctext%20y%3D'.9em'%20font-size%3D'90'%3E%F0%9F%9A%80%20%3C%2Ftext%3E%3C%2Fsvg%3E">
+<style>
+  *{box-sizing:border-box}
+  html{background:#f0f7f4}
+  html,body{margin:0}
+  body{
+    min-height:100vh;
+    background:#f0f7f4;
+    color:#0f2e24;
+    font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased;
+    line-height:1.5;
+  }
+  .wrap{
+    max-width:620px;
+    margin:0 auto;
+    padding:28px 20px 80px;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+  }
+  h1,h2,h3,h4,p,blockquote,pre,figure{margin:0}
+  img{max-width:100%;display:block}
+  a{color:inherit}
+  input,button,textarea,select{font-family:inherit}
+  input:focus,button:focus,textarea:focus,select:focus{outline:2px solid #0f9d6e;outline-offset:2px}
+  
+  
+  @media (max-width:600px){
+    .wrap{padding:20px 16px 60px}
+    .hm{display:none!important}
+    .rcol{grid-template-columns:1fr!important}
+    .rg2{grid-template-columns:repeat(2,1fr)!important}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="blk" data-id="2mjigjp" data-type="divider" style=""><div style="height:1px;background:currentColor;opacity:0.16;border-radius:2px"></div></div>
+<div class="blk" data-id="hiricx4" data-type="heading" style="text-align:left;"><h2 data-prop="text" style="margin:0;font-size:36px;font-weight:800;line-height:1.12;letter-spacing:-.025em;color:#2d568c">Make stories ai</h2></div>
+<div class="blk" data-id="939n0vh" data-type="divider" style=""><div style="height:1px;background:currentColor;opacity:0.16;border-radius:2px"></div></div>
+<div class="blk" id="chatarea" data-id="5h2nw4i" data-type="section" style="border-radius:17px;box-shadow:0 6px 18px -4px rgba(0,0,0,.16),0 2px 6px rgba(0,0,0,.08)"><div style="min-height:389px;background:transparent;border-radius:16px;border:1px dashed rgba(128,128,170,.25)"></div></div>
+<div class="blk" data-id="3onguip" data-type="input" style=""><div>
+    <input type="text" placeholder="Do you want a story? When I ask you for an api key just give me so we can chat" style="width:100%;padding:12px 14px;border-radius:10px;border:1px solid rgba(128,128,170,.35);background:transparent;color:inherit;font-size:15px;outline:none;font-family:inherit"></div></div>
+<div class="blk" data-id="6e5n6na" data-type="button" style="text-align:right;"><a href="#" data-prop="text" style="display:inline-block;text-decoration:none;padding:13px 26px;background:#0f9d6e;color:#ffffff;border-radius:999px;font-weight:700;font-size:16px;letter-spacing:-.01em;box-shadow:0 10px 24px -10px #0f9d6e">Send</a></div>
+</div>
+<script>
+(function() {
+  const chatArea = document.querySelector('#chatarea > div') || document.getElementById('chatarea');
+  const inputEl = document.querySelector('[data-id="3onguip"] input');
+  const sendBtn = document.querySelector('[data-id="6e5n6na"] a');
+
+  if (!chatArea || !inputEl || !sendBtn) return;
+
+  // Inject styling for chat elements
+  if (!document.getElementById('ms-ai-styles')) {
+    const style = document.createElement('style');
+    style.id = 'ms-ai-styles';
+    style.textContent = `
+      #chatarea > div {
+        max-height: 480px;
+        min-height: 260px;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        padding: 16px;
+        background: rgba(15, 23, 42, 0.6);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        scroll-behavior: smooth;
+      }
+      .ms-msg {
+        max-width: 85%;
+        padding: 10px 14px;
+        border-radius: 12px;
+        font-size: 0.95rem;
+        line-height: 1.5;
+        word-break: break-word;
+        white-space: pre-wrap;
+      }
+      .ms-msg-sys {
+        align-self: center;
+        background: rgba(99, 102, 241, 0.15);
+        color: #c7d2fe;
+        border: 1px solid rgba(99, 102, 241, 0.3);
+        max-width: 95%;
+        font-size: 0.9rem;
+      }
+      .ms-msg-user {
+        align-self: flex-end;
+        background: #4f46e5;
+        color: #ffffff;
+        border-bottom-right-radius: 2px;
+      }
+      .ms-msg-bot {
+        align-self: flex-start;
+        background: #1e293b;
+        color: #f1f5f9;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-bottom-left-radius: 2px;
+      }
+      .ms-typing {
+        display: inline-block;
+        animation: msPulse 1s infinite alternate;
+        font-style: italic;
+        color: #94a3b8;
+      }
+      @keyframes msPulse {
+        from { opacity: 0.4; }
+        to { opacity: 1; }
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
+  // State management
+  const STORAGE_KEY_API = 'ms_gemini_api_key';
+  const STORAGE_KEY_MODEL = 'ms_gemini_selected_model';
+  let apiKey = localStorage.getItem(STORAGE_KEY_API) || '';
+  let selectedModel = localStorage.getItem(STORAGE_KEY_MODEL) || '';
+  let availableModels = [];
+  let chatHistory = [];
+  let currentState = 'INIT'; // 'AWAITING_API_KEY' | 'AWAITING_MODEL' | 'CHATTING'
+
+  const fallbackModels = [
+    'gemini-2.0-flash',
+    'gemini-1.5-flash',
+    'gemini-1.5-pro',
+    'gemini-1.0-pro'
+  ];
+
+  function appendMessage(text, role) {
+    const msg = document.createElement('div');
+    msg.className = `ms-msg ms-msg-${role}`;
+    msg.textContent = text;
+    chatArea.appendChild(msg);
+    chatArea.scrollTop = chatArea.scrollHeight;
+    return msg;
+  }
+
+  function setPlaceholder(txt) {
+    inputEl.placeholder = txt;
+  }
+
+  async function fetchModels(key) {
+    try {
+      const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${encodeURIComponent(key)}`);
+      if (!res.ok) throw new Error('API key validation failed');
+      const data = await res.json();
+      const models = (data.models || [])
+        .filter(m => m.supportedGenerationMethods && m.supportedGenerationMethods.includes('generateContent'))
+        .map(m => m.name.replace(/^models\//, ''));
+      return models.length > 0 ? models : fallbackModels;
+    } catch (err) {
+      return fallbackModels;
+    }
+  }
+
+  async function promptModelSelection() {
+    currentState = 'AWAITING_MODEL';
+    appendMessage('🔍 Fetching available Gemini models...', 'sys');
+    setPlaceholder('Loading models...');
+    inputEl.disabled = true;
+
+    availableModels = await fetchModels(apiKey);
+    inputEl.disabled = false;
+
+    let promptText = 'Select a Gemini model by typing its order number:\n';
+    availableModels.forEach((m, idx) => {
+      promptText += `[${idx + 1}] ${m}\n`;
+    });
+    appendMessage(promptText.trim(), 'sys');
+    setPlaceholder('Type the model number (e.g., 1) and press enter');
+  }
+
+  function handleApiKeyInput(keyCandidate) {
+    const trimmed = keyCandidate.trim();
+    if (!trimmed || trimmed.length < 15) {
+      appendMessage('⚠️ Please enter a valid Gemini API key.', 'sys');
+      return;
+    }
+    apiKey = trimmed;
+    localStorage.setItem(STORAGE_KEY_API, apiKey);
+    appendMessage('🔑 API key saved successfully!', 'sys');
+    promptModelSelection();
+  }
+
+  function handleModelSelection(inputVal) {
+    const num = parseInt(inputVal.trim(), 10);
+    if (isNaN(num) || num < 1 || num > availableModels.length) {
+      appendMessage(`⚠️ Invalid option. Please enter a number between 1 and ${availableModels.length}.`, 'sys');
+      return;
+    }
+    selectedModel = availableModels[num - 1];
+    localStorage.setItem(STORAGE_KEY_MODEL, selectedModel);
+    currentState = 'CHATTING';
+    appendMessage(`✨ Model active: ${selectedModel}\nYou can begin generating stories now! Type "change model" anytime to switch models.`, 'sys');
+    setPlaceholder('Tell me what kind of story you want to create...');
+  }
+
+  async function generateGeminiStory(userPrompt) {
+    chatHistory.push({ role: 'user', parts: [{ text: userPrompt }] });
+    const typingIndicator = appendMessage('Thinking up your story...', 'bot');
+    typingIndicator.classList.add('ms-typing');
+
+    const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${selectedModel}:generateContent?key=${encodeURIComponent(apiKey)}`;
+
+    try {
+      const res = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: chatHistory,
+          generationConfig: {
+            temperature: 0.8,
+            maxOutputTokens: 2048
+          }
+        })
+      });
+
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}));
+        throw new Error(errData.error?.message || `API error ${res.status}`);
+      }
+
+      const data = await res.json();
+      const reply = data.candidates?.[0]?.content?.parts?.[0]?.text || 'No response returned from model.';
+      typingIndicator.classList.remove('ms-typing');
+      typingIndicator.textContent = reply;
+      chatHistory.push({ role: 'model', parts: [{ text: reply }] });
+    } catch (err) {
+      typingIndicator.classList.remove('ms-typing');
+      typingIndicator.textContent = `❌ Error: ${err.message}`;
+      // Remove unanswered prompt from history to avoid stale turns
+      chatHistory.pop();
+    }
+    chatArea.scrollTop = chatArea.scrollHeight;
+  }
+
+  function handleUserInput() {
+    const val = inputEl.value.trim();
+    if (!val) return;
+    inputEl.value = '';
+
+    if (currentState === 'AWAITING_API_KEY') {
+      appendMessage('•••••••••••••••• (API Key entered)', 'user');
+      handleApiKeyInput(val);
+      return;
+    }
+
+    appendMessage(val, 'user');
+
+    if (currentState === 'AWAITING_MODEL') {
+      handleModelSelection(val);
+      return;
+    }
+
+    if (currentState === 'CHATTING') {
+      if (val.toLowerCase() === 'change model') {
+        promptModelSelection();
+        return;
+      }
+      generateGeminiStory(val);
+    }
+  }
+
+  // Initial boot state
+  if (!apiKey) {
+    currentState = 'AWAITING_API_KEY';
+    appendMessage('👋 Welcome to Make Stories AI! To get started, please paste your Google Gemini API Key below:', 'sys');
+    setPlaceholder('Paste your Gemini API key here and press Send');
+  } else if (!selectedModel) {
+    promptModelSelection();
+  } else {
+    currentState = 'CHATTING';
+    appendMessage(`Ready with model: ${selectedModel}. What story should we write? (Type "change model" to switch)`, 'sys');
+    setPlaceholder('Tell me what kind of story you want to create...');
+  }
+
+  // Event listeners
+  sendBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    handleUserInput();
+  });
+
+  inputEl.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handleUserInput();
+    }
+  });
+})();
+</script>
+</body>
+</html>
