@@ -2,131 +2,658 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Eliya Sande — Software Engineer &amp; Telecom Student</title>
-<meta name="description" content="Eliya Sande — telecommunication &amp; information engineering student at JKUAT, Kenya. Builder of QejaConnect and Codeforge.">
-<meta name="theme-color" content="#0F172A">
-<link rel="manifest" href="manifest.json">
-<link rel="icon" href="icons/favicon-32.png">
-<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
-<link rel="stylesheet" href="css/style.css">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1a1535">
+<title>Poster Studio | Free poster and image editor for Android</title>
+<meta name="description" content="Poster Studio is a free Android app that helps content creators design and edit posters and images. Download the APK from GitHub.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f6faf9;
+  --paper:#ffffff;
+  --ink:#0a0a0a;
+  --navy:#1a1535;
+  --teal:#0b8fa0;
+  --green:#1f9d55;
+  --deep:#0d6b3a;
+  --mix:linear-gradient(135deg,#0b8fb8 0%,#17a08a 50%,#1f9d55 100%);
+  --line:#d9e6e2;
+  --muted:#46525c;
+  --radius:14px;
+  --head:"Outfit","Segoe UI",system-ui,sans-serif;
+  --body:"Source Sans 3","Segoe UI",system-ui,-apple-system,sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.6;text-align:center;overflow-x:hidden}
+img,svg{max-width:100%}
+a{color:inherit;text-decoration:none}
+h1,h2,h3{font-family:var(--head);margin:0;line-height:1.15;color:var(--navy)}
+p{margin:0}
+:focus-visible{outline:3px solid var(--teal);outline-offset:3px;border-radius:6px}
+.wrap{width:100%;max-width:1120px;margin:0 auto;padding:0 20px}
+
+/* ---------- Kenyan flag loader ---------- */
+#loader{position:fixed;inset:0;z-index:1000;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;padding:20px;transition:opacity .6s ease,visibility .6s ease}
+#loader.done{opacity:0;visibility:hidden}
+#loader .flag{width:min(340px,80vw);height:auto;filter:drop-shadow(0 18px 24px rgba(26,21,53,.22))}
+#loader .l-title{font-family:var(--head);font-weight:700;font-size:1.35rem;color:var(--navy);animation:pulse 1.6s ease-in-out infinite}
+#loader .l-sub{font-size:.95rem;color:var(--muted);margin-top:-14px}
+.l-track{width:min(340px,80vw);height:8px;border-radius:99px;background:#e3ece9;overflow:hidden}
+.l-fill{height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,#0a0a0a 0 33.3%,#bb0000 33.3% 66.6%,#006600 66.6%);animation:fill 2.3s cubic-bezier(.6,.05,.3,1) forwards}
+@keyframes fill{to{width:100%}}
+@keyframes pulse{50%{opacity:.55}}
+
+/* ---------- Scroll progress ---------- */
+#progress{position:fixed;top:0;left:0;height:4px;width:0;background:var(--mix);z-index:900;transition:width .12s linear}
+
+/* ---------- Top utility bar ---------- */
+.topbar{background:var(--navy);color:#dfe8f0;font-size:.88rem}
+.topbar .wrap{display:flex;flex-wrap:wrap;justify-content:center;gap:4px 6px;padding-top:8px;padding-bottom:8px}
+.topbar a{padding:4px 12px;border-radius:6px;transition:background .25s,color .25s}
+.topbar a:hover{background:rgba(255,255,255,.12);color:#fff}
+.topbar a.on{background:var(--mix);color:#fff;font-weight:600}
+
+/* ---------- Header and nav ---------- */
+.site-header{position:sticky;top:0;z-index:800;background:rgba(255,255,255,.94);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--line);transition:box-shadow .3s}
+.site-header.scrolled{box-shadow:0 8px 24px -14px rgba(26,21,53,.35)}
+.hbar{display:flex;align-items:center;justify-content:center;position:relative;min-height:64px}
+.brand{display:inline-flex;align-items:center;gap:10px;font-family:var(--head);font-weight:800;font-size:1.35rem;color:var(--navy)}
+.brand-mark{width:38px;height:38px;border-radius:11px;background:var(--mix);display:grid;place-items:center;box-shadow:0 6px 14px -6px rgba(11,143,160,.8);transition:transform .4s}
+.brand:hover .brand-mark{transform:rotate(-8deg) scale(1.08)}
+.burger{position:absolute;right:0;width:46px;height:46px;border:1px solid var(--line);background:#fff;border-radius:12px;cursor:pointer;display:grid;place-items:center;transition:transform .15s}
+.burger:active{transform:scale(.9)}
+.burger span{display:block;width:20px;height:2px;background:var(--navy);border-radius:2px;position:relative;transition:background .2s}
+.burger span::before,.burger span::after{content:"";position:absolute;left:0;width:20px;height:2px;background:var(--navy);border-radius:2px;transition:transform .3s,top .3s}
+.burger span::before{top:-6px}.burger span::after{top:6px}
+.burger[aria-expanded="true"] span{background:transparent}
+.burger[aria-expanded="true"] span::before{top:0;transform:rotate(45deg)}
+.burger[aria-expanded="true"] span::after{top:0;transform:rotate(-45deg)}
+.nav{max-height:0;overflow:hidden;transition:max-height .45s ease}
+.nav.open{max-height:380px}
+.nav ul{list-style:none;margin:0;padding:6px 0 16px;display:flex;flex-direction:column;gap:4px}
+.nav a{display:block;padding:12px;border-radius:10px;font-weight:600;color:var(--navy);transition:background .25s,color .25s}
+.nav a:hover,.nav a.active{background:#e8f5f1;color:var(--deep)}
+
+/* ---------- Buttons ---------- */
+.btn{position:relative;overflow:hidden;display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:52px;padding:0 28px;border-radius:12px;border:2px solid transparent;font-family:var(--head);font-weight:600;font-size:1.02rem;cursor:pointer;transition:transform .15s,box-shadow .3s,background .3s,color .3s;-webkit-tap-highlight-color:transparent}
+.btn:active{transform:scale(.95)}
+.btn.primary{background:var(--mix);color:#fff;box-shadow:0 12px 26px -12px rgba(11,143,160,.9)}
+.btn.primary:hover{box-shadow:0 16px 30px -10px rgba(31,157,85,.9);transform:translateY(-2px)}
+.btn.dark{background:var(--navy);color:#fff}
+.btn.dark:hover{background:#000;transform:translateY(-2px)}
+.btn.ghost{background:#fff;color:var(--navy);border-color:var(--line)}
+.btn.ghost:hover{border-color:var(--teal);color:var(--deep);transform:translateY(-2px)}
+.btn.wa{background:#1f9d55;color:#fff}
+.btn.wa:hover{background:#0d6b3a;transform:translateY(-2px)}
+.btn.big{min-height:60px;padding:0 38px;font-size:1.15rem}
+.btn svg{flex:none}
+.ripple{position:absolute;border-radius:50%;background:rgba(255,255,255,.5);transform:scale(0);animation:rip .65s ease-out;pointer-events:none}
+.btn.ghost .ripple{background:rgba(11,143,160,.25)}
+@keyframes rip{to{transform:scale(4);opacity:0}}
+.btn-row{display:flex;flex-direction:column;align-items:stretch;gap:12px;width:100%;max-width:420px;margin:0 auto}
+
+/* ---------- Hero ---------- */
+.hero{position:relative;padding:48px 0 70px;background:
+  radial-gradient(900px 380px at 15% -10%,rgba(11,143,184,.14),transparent 60%),
+  radial-gradient(800px 380px at 90% 0%,rgba(31,157,85,.14),transparent 60%),var(--bg)}
+.notice{display:inline-flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--line);padding:6px 16px;border-radius:99px;font-weight:600;font-size:.92rem;color:var(--deep)}
+.notice i{width:9px;height:9px;border-radius:50%;background:var(--green);box-shadow:0 0 0 0 rgba(31,157,85,.6);animation:ping 1.8s infinite}
+@keyframes ping{70%{box-shadow:0 0 0 10px rgba(31,157,85,0)}100%{box-shadow:0 0 0 0 rgba(31,157,85,0)}}
+.hero h1{font-size:clamp(2.2rem,8.4vw,4rem);font-weight:800;margin:20px auto 16px;max-width:15ch}
+.hero h1 .grad{background:var(--mix);-webkit-background-clip:text;background-clip:text;color:transparent}
+.lead{max-width:60ch;margin:0 auto 28px;color:var(--muted);font-size:1.12rem}
+.facts{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;max-width:520px;margin:34px auto 0}
+.fact{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:14px 6px}
+.fact b{display:block;font-family:var(--head);font-size:1.3rem;color:var(--navy)}
+.fact span{font-size:.85rem;color:var(--muted)}
+
+/* phone mockup */
+.stage{position:relative;margin:48px auto 0;width:100%;max-width:760px}
+.phone{width:min(264px,72vw);aspect-ratio:9/18.2;margin:0 auto;background:var(--navy);border-radius:38px;padding:10px;box-shadow:0 40px 70px -26px rgba(26,21,53,.6);animation:float 6s ease-in-out infinite;position:relative;z-index:2}
+@keyframes float{50%{transform:translateY(-12px)}}
+.screen{height:100%;background:#fff;border-radius:29px;overflow:hidden;display:flex;flex-direction:column}
+.notch{width:70px;height:6px;border-radius:9px;background:#e2e8e6;margin:9px auto 4px}
+.poster{position:relative;flex:1;margin:6px 10px;border-radius:14px;background:linear-gradient(160deg,#0b8fb8 0%,#17a08a 45%,#0b3d2e 100%);color:#fff;overflow:hidden;display:grid;place-items:center}
+.p-circle{position:absolute;width:90px;height:90px;border-radius:50%;right:-24px;bottom:-20px;background:rgba(255,255,255,.18);animation:drift 7s ease-in-out infinite alternate}
+.p-bar{position:absolute;left:0;top:18px;width:46%;height:10px;background:#fff;opacity:.9;border-radius:0 6px 6px 0}
+.p-text{position:relative;padding:10px 14px;font-family:var(--head);font-weight:800;font-size:1.5rem;line-height:1.05;animation:drag 6s ease-in-out infinite alternate}
+.p-text small{display:block;font-family:var(--body);font-weight:500;font-size:.62rem;letter-spacing:.02em;margin-top:6px;opacity:.9}
+.p-text::before{content:"";position:absolute;inset:0;border:1.5px dashed #fff;border-radius:6px;opacity:.85}
+.p-text i{position:absolute;width:8px;height:8px;background:#fff;border-radius:2px}
+.p-text i:nth-of-type(1){left:-4px;top:-4px}.p-text i:nth-of-type(2){right:-4px;top:-4px}
+.p-text i:nth-of-type(3){left:-4px;bottom:-4px}.p-text i:nth-of-type(4){right:-4px;bottom:-4px}
+@keyframes drag{0%{transform:translate(-14px,-18px)}100%{transform:translate(14px,20px)}}
+@keyframes drift{to{transform:translate(-16px,-20px) scale(1.15)}}
+.tools{padding:8px 14px 14px;display:grid;gap:8px}
+.sw{display:flex;justify-content:center;gap:7px;margin-bottom:2px}
+.sw i{width:20px;height:20px;border-radius:50%;border:2px solid #fff;box-shadow:0 0 0 1px var(--line);animation:pop 3s ease-in-out infinite}
+.sw i:nth-child(2){animation-delay:.3s}.sw i:nth-child(3){animation-delay:.6s}.sw i:nth-child(4){animation-delay:.9s}.sw i:nth-child(5){animation-delay:1.2s}
+@keyframes pop{50%{transform:scale(1.25)}}
+.sl{display:grid;grid-template-columns:62px 1fr;align-items:center;gap:8px;font-size:.62rem;font-weight:600;color:var(--muted);text-align:left}
+.sl div{height:5px;border-radius:9px;background:#e1ebe8;position:relative}
+.sl div::after{content:"";position:absolute;top:50%;left:var(--a);width:12px;height:12px;border-radius:50%;background:var(--mix);transform:translate(-50%,-50%);box-shadow:0 2px 5px rgba(0,0,0,.25);animation:slide 4s ease-in-out infinite alternate}
+.sl:nth-child(3) div::after{animation-delay:-1.2s;--a:30%}
+.sl:nth-child(4) div::after{animation-delay:-2.4s;--a:70%}
+@keyframes slide{0%{left:15%}100%{left:85%}}
+.chip{display:none;position:absolute;background:#fff;border:1px solid var(--line);border-radius:14px;padding:10px 16px;font-family:var(--head);font-weight:600;font-size:.95rem;box-shadow:0 18px 30px -18px rgba(26,21,53,.5);z-index:3;animation:float 5s ease-in-out infinite}
+.chip.c1{left:4%;top:20%;color:var(--deep)}
+.chip.c2{right:4%;top:36%;animation-delay:-2s;color:var(--teal)}
+.chip.c3{left:10%;bottom:14%;animation-delay:-3.4s;color:var(--navy)}
+
+/* ---------- Sections ---------- */
+.section{padding:72px 0}
+.section.alt{background:#fff;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.sec-head{max-width:640px;margin:0 auto 38px}
+.sec-head h2{font-size:clamp(1.8rem,6vw,2.6rem);font-weight:800}
+.sec-head h2::after{content:"";display:block;width:0;height:5px;border-radius:9px;background:var(--mix);margin:14px auto 0;transition:width .9s .2s ease}
+.sec-head.in h2::after{width:84px}
+.sec-head p{margin-top:12px;color:var(--muted)}
+
+.grid{display:grid;gap:16px;grid-template-columns:1fr}
+.card{background:#fff;border:1px solid var(--line);border-top:4px solid var(--teal);border-radius:var(--radius);padding:26px 22px;display:flex;flex-direction:column;align-items:center;gap:10px;transition:transform .3s,box-shadow .3s,border-color .3s}
+.card:nth-child(even){border-top-color:var(--green)}
+.card:hover{transform:translateY(-6px);box-shadow:0 24px 40px -26px rgba(26,21,53,.5)}
+.card .ic{width:54px;height:54px;border-radius:15px;background:#e8f5f1;color:var(--deep);display:grid;place-items:center;transition:background .3s,color .3s,transform .4s}
+.card:hover .ic{background:var(--mix);color:#fff;transform:rotate(-6deg) scale(1.06)}
+.card h3{font-size:1.2rem}
+.card p{color:var(--muted);font-size:1rem}
+
+/* download */
+.get{background:var(--navy);color:#e8eef5;position:relative;overflow:hidden}
+.get::before,.get::after{content:"";position:absolute;border-radius:50%;filter:blur(60px);opacity:.5;pointer-events:none}
+.get::before{width:320px;height:320px;background:#0b8fb8;left:-100px;top:-80px}
+.get::after{width:320px;height:320px;background:#1f9d55;right:-100px;bottom:-90px}
+.get .wrap{position:relative;z-index:1}
+.get h2,.get h3{color:#fff}
+.get .sec-head p{color:#c4d0dc}
+.get-panel{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.18);border-radius:20px;padding:30px 20px;max-width:760px;margin:0 auto 22px;display:flex;flex-direction:column;align-items:center;gap:16px}
+.get-panel .meta{display:flex;flex-wrap:wrap;justify-content:center;gap:8px}
+.tag{border:1px solid rgba(255,255,255,.28);padding:4px 14px;border-radius:99px;font-size:.9rem;font-weight:600}
+.small{font-size:.92rem;color:#c4d0dc;max-width:52ch}
+.steps{display:grid;gap:14px;grid-template-columns:1fr;max-width:1000px;margin:0 auto}
+.step{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);border-radius:var(--radius);padding:22px 18px;display:flex;flex-direction:column;align-items:center;gap:8px;transition:transform .3s,background .3s}
+.step:hover{transform:translateY(-5px);background:rgba(255,255,255,.12)}
+.step .n{width:40px;height:40px;border-radius:50%;background:var(--mix);color:#fff;display:grid;place-items:center;font-family:var(--head);font-weight:700}
+.step p{font-size:.98rem;color:#d3dce6}
+
+/* donate */
+.donate-card{max-width:720px;margin:0 auto;background:#fff;border:1px solid var(--line);border-radius:22px;padding:34px 20px;display:flex;flex-direction:column;align-items:center;gap:18px;box-shadow:0 30px 50px -36px rgba(26,21,53,.55);position:relative;overflow:hidden}
+.donate-card::before{content:"";position:absolute;left:0;right:0;top:0;height:6px;background:linear-gradient(90deg,#0a0a0a 0 33%,#bb0000 33% 66%,#006600 66%)}
+.heart{width:58px;height:58px;border-radius:50%;background:#e8f5f1;color:var(--green);display:grid;place-items:center;animation:beat 1.8s ease-in-out infinite}
+@keyframes beat{0%,100%{transform:scale(1)}15%{transform:scale(1.15)}30%{transform:scale(1)}45%{transform:scale(1.1)}}
+.amounts{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;width:100%;max-width:420px}
+.amt{min-height:48px;border-radius:12px;border:2px solid var(--line);background:#fff;font-family:var(--head);font-weight:600;font-size:1rem;color:var(--navy);cursor:pointer;transition:transform .15s,border-color .25s,background .25s,color .25s}
+.amt:active{transform:scale(.94)}
+.amt:hover{border-color:var(--teal)}
+.amt.sel{background:var(--mix);color:#fff;border-color:transparent}
+.numbox{width:100%;max-width:420px;border:2px dashed var(--teal);border-radius:16px;padding:16px;background:#f1faf7}
+.numbox span{display:block;font-size:.9rem;color:var(--muted)}
+.numbox strong{display:block;font-family:var(--head);font-size:clamp(1.5rem,6.5vw,2rem);color:var(--navy);letter-spacing:.01em}
+.note{font-size:.92rem;color:var(--muted);max-width:50ch}
+
+/* contact */
+.contact-grid{display:grid;gap:16px;grid-template-columns:1fr;max-width:820px;margin:0 auto}
+.c-card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:30px 20px;display:flex;flex-direction:column;align-items:center;gap:12px;transition:transform .3s,box-shadow .3s}
+.c-card:hover{transform:translateY(-6px);box-shadow:0 24px 40px -26px rgba(26,21,53,.5)}
+.c-card .ic{width:58px;height:58px;border-radius:50%;display:grid;place-items:center;color:#fff}
+.c-card .ic.g{background:var(--green)}.c-card .ic.b{background:var(--teal)}
+.c-card p{color:var(--muted);word-break:break-word}
+
+/* footer: always bold */
+footer{background:var(--ink);color:#e5ecf2;padding:44px 0 34px;font-weight:700}
+footer *{font-weight:700}
+.f-flag{display:flex;width:90px;height:12px;margin:0 auto 18px;border-radius:3px;overflow:hidden}
+.f-flag i{flex:1}
+.f-links{display:flex;flex-wrap:wrap;justify-content:center;gap:6px 18px;margin:16px 0}
+.f-links a{padding:4px 2px;border-bottom:2px solid transparent;transition:border-color .25s,color .25s}
+.f-links a:hover{border-color:var(--green);color:#fff}
+footer .brand{color:#fff}
+footer small{display:block;color:#aab6c2;font-size:.9rem;margin-top:6px}
+
+/* toast */
+.toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,30px);background:var(--navy);color:#fff;padding:13px 22px;border-radius:12px;font-weight:600;font-size:.96rem;max-width:92vw;opacity:0;pointer-events:none;transition:opacity .3s,transform .3s;z-index:1100;box-shadow:0 18px 30px -14px rgba(0,0,0,.5);border-left:5px solid var(--green)}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+
+/* scroll reveal */
+.rv{opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s ease;transition-delay:var(--d,0s)}
+.rv.in{opacity:1;transform:none}
+
+/* ---------- Larger screens ---------- */
+@media (min-width:640px){
+  .btn-row{flex-direction:row;justify-content:center;max-width:none;width:auto}
+  .grid{grid-template-columns:repeat(2,1fr)}
+  .steps{grid-template-columns:repeat(2,1fr)}
+  .contact-grid{grid-template-columns:repeat(2,1fr)}
+  .amounts{grid-template-columns:repeat(4,1fr)}
+  .chip{display:block}
+}
+@media (min-width:900px){
+  .burger{display:none}
+  .hbar{gap:44px}
+  .nav{max-height:none;overflow:visible}
+  .nav ul{flex-direction:row;padding:0;gap:6px}
+  .nav a{padding:10px 18px}
+  .grid{grid-template-columns:repeat(3,1fr)}
+  .steps{grid-template-columns:repeat(4,1fr)}
+  .hero{padding:64px 0 90px}
+  .section{padding:96px 0}
+  .donate-card{padding:44px 40px}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
+  .rv{opacity:1;transform:none}
+}
+</style>
 </head>
 <body>
 
-<header class="site-header">
+<!-- Kenyan flag loader -->
+<div id="loader" role="status" aria-label="Loading Poster Studio">
+  <svg class="flag" viewBox="0 0 300 200" aria-hidden="true">
+    <defs>
+      <filter id="wave" x="-5%" y="-8%" width="110%" height="116%">
+        <feTurbulence type="fractalNoise" baseFrequency="0.008 0.03" numOctaves="1" seed="3" result="n">
+          <animate attributeName="baseFrequency" dur="3.2s" values="0.008 0.03;0.013 0.05;0.008 0.03" repeatCount="indefinite"/>
+        </feTurbulence>
+        <feDisplacementMap in="SourceGraphic" in2="n" scale="9" xChannelSelector="R" yChannelSelector="G"/>
+      </filter>
+      <clipPath id="unfurl">
+        <rect x="0" y="0" width="0" height="200">
+          <animate attributeName="width" from="0" to="300" dur="1.5s" begin="0.15s" fill="freeze"/>
+        </rect>
+      </clipPath>
+    </defs>
+    <g filter="url(#wave)">
+      <g clip-path="url(#unfurl)">
+        <rect width="300" height="200" fill="#fff"/>
+        <rect y="0" width="300" height="58" fill="#0a0a0a"/>
+        <rect y="68" width="300" height="64" fill="#bb0000"/>
+        <rect y="142" width="300" height="58" fill="#006600"/>
+        <g stroke="#fff" stroke-width="3.5" stroke-linecap="round">
+          <line x1="108" y1="58" x2="192" y2="142"/>
+          <line x1="192" y1="58" x2="108" y2="142"/>
+        </g>
+        <g transform="translate(150 100)">
+          <ellipse rx="27" ry="43" fill="#0a0a0a"/>
+          <ellipse rx="23" ry="39" fill="#fff"/>
+          <ellipse rx="19" ry="35" fill="#bb0000"/>
+          <ellipse rx="7" ry="24" fill="#0a0a0a"/>
+          <ellipse rx="3" ry="14" fill="#fff"/>
+        </g>
+      </g>
+    </g>
+  </svg>
+  <div class="l-title">Karibu Poster Studio</div>
+  <div class="l-sub">Getting everything ready</div>
+  <div class="l-track"><div class="l-fill"></div></div>
+</div>
+
+<div id="progress"></div>
+
+<!-- Utility bar -->
+<div class="topbar">
   <div class="wrap">
-    <a href="index.html" class="brand"><span class="pulse"></span>Eliya Sande</a>
-    <button class="nav-toggle" aria-label="Toggle menu" aria-expanded="false">☰</button>
-    <nav class="primary-nav">
-      <ul>
-        <li><a href="index.html" aria-current="page">Home</a></li>
-        <li><a href="about.html">About</a></li>
-        <li><a href="projects.html">Projects</a></li>
-        <li><a href="blog.html">Blog</a></li>
-        <li><a href="contact.html">Contact</a></li>
-      </ul>
-    </nav>
+    <a href="#home" class="on">Poster Studio</a>
+    <a href="#get" data-link="github" target="_blank" rel="noopener noreferrer">GitHub</a>
+    <a href="#donate">Donate</a>
+    <a href="#contact">Contact</a>
+  </div>
+</div>
+
+<!-- Header -->
+<header class="site-header" id="top">
+  <div class="wrap">
+    <div class="hbar">
+      <a href="#home" class="brand" aria-label="Poster Studio home">
+        <span class="brand-mark">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="3"/><circle cx="9.5" cy="9" r="1.8"/><path d="M4 17l5-5 4 4 3-3 4 4"/></svg>
+        </span>
+        Poster Studio
+      </a>
+      <button class="burger" id="burger" aria-label="Open menu" aria-expanded="false" aria-controls="nav"><span></span></button>
+      <nav class="nav" id="nav" aria-label="Main">
+        <ul>
+          <li><a href="#home" class="active">Home</a></li>
+          <li><a href="#features">Features</a></li>
+          <li><a href="#get">Download</a></li>
+          <li><a href="#donate">Donate</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
   </div>
 </header>
 
 <main>
-  <section class="hero">
-    <div class="wrap">
-      <div class="hero-copy">
-        <p class="hand-tag">Hey, I'm Eliya</p>
-        <h1>I build things that carry signal — networks, interfaces, and ideas.</h1>
-        <p class="lede">I'm Eliya Sande, a telecommunication and information engineering student from Busia County, Kenya, and a self-taught software developer. I design and ship real products, from community platforms to AI-assisted developer tools.</p>
-        <div class="hero-actions">
-          <a href="projects.html" class="btn btn-primary">View my work</a>
-          <a href="contact.html" class="btn btn-outline">Start a project</a>
-        </div>
-      </div>
-      <div class="hero-visual">
-        <svg class="hero-wave" viewBox="0 0 480 320" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Signal wave illustration">
-          <rect width="480" height="320" rx="8" fill="#141E33" stroke="#2A3752"/>
-          <path d="M20 200 Q 60 120 100 200 T 180 200 T 260 200 T 340 200 T 420 200" stroke="#22D3EE" stroke-width="2" opacity="0.9"/>
-          <path d="M20 230 Q 60 170 100 230 T 180 230 T 260 230 T 340 230 T 420 230" stroke="#0E7490" stroke-width="2" opacity="0.7"/>
-          <circle cx="100" cy="200" r="4" fill="#22D3EE"/>
-          <circle cx="260" cy="200" r="4" fill="#22D3EE"/>
-          <circle cx="420" cy="200" r="4" fill="#22D3EE"/>
-          <text x="40" y="70" fill="#9AA9C4" font-family="JetBrains Mono, monospace" font-size="13">$ status --uplink</text>
-          <text x="40" y="95" fill="#34D399" font-family="JetBrains Mono, monospace" font-size="13">connected · low latency</text>
-        </svg>
-      </div>
+<!-- Hero -->
+<section class="hero" id="home">
+  <div class="wrap">
+    <span class="notice rv"><i></i> Free for every content creator</span>
+    <h1 class="rv" style="--d:.08s">Design posters and edit images <span class="grad">on your phone</span></h1>
+    <p class="lead rv" style="--d:.16s">Poster Studio is a free Android app for creating posters, adding text and images, and fine-tuning every colour. Download the APK from GitHub and start creating.</p>
+    <div class="btn-row rv" style="--d:.24s">
+      <a class="btn primary big" data-link="apk" href="#get">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0l-5-5m5 5l5-5M4 20h16"/></svg>
+        Download APK
+      </a>
+      <a class="btn ghost big" href="#features">See features</a>
     </div>
-  </section>
 
-  <section class="wrap">
-    <div class="section-head">
-      <h2>Featured projects</h2>
-      <span class="section-num">01 / work</span>
+    <div class="facts rv" style="--d:.3s">
+      <div class="fact"><b>Free</b><span>No cost</span></div>
+      <div class="fact"><b>Android</b><span>APK file</span></div>
+      <div class="fact"><b data-text="version">1.0</b><span>Version</span></div>
     </div>
-    <div class="grid grid-2">
-      <article class="project-card">
-        <img src="images/img1.jpg" alt="QejaConnect platform screenshot" loading="lazy">
-        <div class="body">
-          <span class="status">Live</span>
-          <h3>QejaConnect</h3>
-          <p class="dim">A connection platform built to bring people and services together, live at qejaconnect.co.ke.</p>
-          <div class="tag-row"><span class="tag">web</span><span class="tag">platform</span></div>
-          <a href="https://qejaconnect.co.ke" target="_blank" rel="noopener">Visit qejaconnect.co.ke →</a>
+
+    <div class="stage rv" style="--d:.2s">
+      <div class="chip c1">Drag and drop</div>
+      <div class="chip c2">Any colour</div>
+      <div class="chip c3">Sharpen and brighten</div>
+      <div class="phone" aria-label="Poster Studio app preview">
+        <div class="screen">
+          <div class="notch"></div>
+          <div class="poster">
+            <div class="p-bar"></div>
+            <div class="p-circle"></div>
+            <div class="p-text">SAUTI<br>YA MTAA<small>Live music this Saturday</small><i></i><i></i><i></i><i></i></div>
+          </div>
+          <div class="tools">
+            <div class="sw"><i style="background:#0b8fb8"></i><i style="background:#1f9d55"></i><i style="background:#0a0a0a"></i><i style="background:#1a1535"></i><i style="background:#fff"></i></div>
+            <div class="sl">Brightness<div></div></div>
+            <div class="sl">Contrast<div></div></div>
+            <div class="sl">Sharpness<div></div></div>
+          </div>
         </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Features -->
+<section class="section alt" id="features">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <h2>Everything you need to make a poster</h2>
+      <p>Simple tools that work well on a phone, built for creators who need a result fast.</p>
+    </div>
+    <div class="grid">
+      <article class="card rv">
+        <div class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M3 9h18M9 21V9"/></svg></div>
+        <h3>Poster design</h3>
+        <p>Start from a blank canvas and build your poster piece by piece.</p>
       </article>
-      <article class="project-card">
-        <img src="images/img2.jpg" alt="Codeforge IDE screenshot" loading="lazy">
-        <div class="body">
-          <span class="status">Live</span>
-          <h3>Codeforge</h3>
-          <p class="dim">An AI-powered in-browser IDE — write, run, and get AI assistance on code without leaving the page.</p>
-          <div class="tag-row"><span class="tag">AI</span><span class="tag">developer tools</span></div>
-          <a href="https://eliyasande65-lang.github.io/codeforge" target="_blank" rel="noopener">Open Codeforge →</a>
-        </div>
+      <article class="card rv" style="--d:.07s">
+        <div class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6V4h16v2M12 4v16M9 20h6"/></svg></div>
+        <h3>Supporting text</h3>
+        <p>Add headlines and extra lines of text to explain your message.</p>
+      </article>
+      <article class="card rv" style="--d:.14s">
+        <div class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="2"/><path d="M3 17l5-5 4 4 3-3 6 6"/></svg></div>
+        <h3>Image embedding</h3>
+        <p>Bring your own photos into the poster from your gallery.</p>
+      </article>
+      <article class="card rv">
+        <div class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 9l-3 3 3 3M9 5l3-3 3 3M15 19l-3 3-3-3M19 9l3 3-3 3M2 12h20M12 2v20"/></svg></div>
+        <h3>Drag and drop</h3>
+        <p>Move text and images with your finger until the layout feels right.</p>
+      </article>
+      <article class="card rv" style="--d:.07s">
+        <div class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a9 9 0 100 18c1.4 0 2-1 2-2 0-1.5-1-1.7-1-3 0-1 .8-2 2-2h2.5a3.5 3.5 0 003.5-3.5C21 6.5 17 3 12 3z"/><circle cx="7.5" cy="11" r="1"/><circle cx="10" cy="7" r="1"/><circle cx="15" cy="7" r="1"/></svg></div>
+        <h3>Vast colour selection</h3>
+        <p>Pick from a wide range of colours to match your brand or mood.</p>
+      </article>
+      <article class="card rv" style="--d:.14s">
+        <div class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/></svg></div>
+        <h3>Image adjustments</h3>
+        <p>Control contrast, sharpness and brightness for cleaner, brighter images.</p>
       </article>
     </div>
-  </section>
+  </div>
+</section>
 
-  <section class="wrap">
-    <div class="section-head">
-      <h2>Gallery</h2>
-      <span class="section-num">02 / moments</span>
+<!-- Download -->
+<section class="section get" id="get">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <h2>Download Poster Studio</h2>
+      <p>The APK is hosted on GitHub. Tap the button and you will be taken there.</p>
     </div>
-    <div class="gallery">
-      <img src="images/img3.jpg" alt="Eliya Sande photo" loading="lazy">
-      <img src="images/img4.jpg" alt="Eliya Sande photo" loading="lazy">
-      <img src="images/img5.jpg" alt="Eliya Sande photo" loading="lazy">
-      <img src="images/img6.jpg" alt="Eliya Sande photo" loading="lazy">
-      <img src="images/img7.jpg" alt="Eliya Sande photo" loading="lazy">
-    </div>
-  </section>
-
-  <section class="wrap">
-    <div class="card" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;">
-      <div>
-        <h2 style="margin-bottom:.3rem;">Have a project in mind?</h2>
-        <p class="dim" style="margin-bottom:0;">I'm open to freelance builds, collaborations, and telecom/software internships.</p>
+    <div class="get-panel rv">
+      <div class="meta">
+        <span class="tag">Android</span>
+        <span class="tag">Free</span>
+        <span class="tag">Version <span data-text="version">1.0</span></span>
       </div>
-      <a href="contact.html" class="btn btn-ember">Get in touch</a>
+      <a class="btn primary big" data-link="apk" href="#get">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0l-5-5m5 5l5-5M4 20h16"/></svg>
+        Download APK from GitHub
+      </a>
+      <p class="small">Your phone may ask you to allow installs from your browser or file manager. This is normal for apps installed outside the Play Store.</p>
     </div>
-  </section>
+    <div class="steps">
+      <div class="step rv"><span class="n">1</span><h3>Open GitHub</h3><p>Tap the download button above.</p></div>
+      <div class="step rv" style="--d:.08s"><span class="n">2</span><h3>Get the APK</h3><p>Download the APK file from the release page.</p></div>
+      <div class="step rv" style="--d:.16s"><span class="n">3</span><h3>Install</h3><p>Open the file and allow the install if asked.</p></div>
+      <div class="step rv" style="--d:.24s"><span class="n">4</span><h3>Create</h3><p>Open Poster Studio and make your first poster.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- Donate -->
+<section class="section" id="donate">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <h2>Support Poster Studio</h2>
+      <p>The app is free. A donation of any size helps pay for new features and updates.</p>
+    </div>
+    <div class="donate-card rv">
+      <div class="heart" aria-hidden="true"><svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-7.5-4.6-9.6-9.2C1 8.6 2.7 5 6.2 5c2 0 3.2 1 3.8 2 .6-1 1.8-2 3.8-2 3.5 0 5.2 3.6 3.8 6.8C19.500 16.400 12 21 12 21z"/></svg></div>
+      <h3>Send a donation</h3>
+      <p class="note">Pick an amount if you like, then send it to the number below.</p>
+      <div class="amounts" id="amounts">
+        <button type="button" class="amt" data-amt="100">KES 100</button>
+        <button type="button" class="amt" data-amt="250">KES 250</button>
+        <button type="button" class="amt" data-amt="500">KES 500</button>
+        <button type="button" class="amt" data-amt="">Any amount</button>
+      </div>
+      <div class="numbox">
+        <span>Send to</span>
+        <strong id="donNumber">+254 714 104 737</strong>
+      </div>
+      <div class="btn-row">
+        <button type="button" class="btn dark" id="copyBtn">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 012-2h9"/></svg>
+          Copy number
+        </button>
+        <a class="btn wa" id="donWa" data-link="wa-donate" href="#donate" target="_blank" rel="noopener noreferrer">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12.040 2a9.900 9.900 0 00-8.480 14.980L2 22l5.180-1.510A9.900 9.900 0 1012.040 2zm5.770 14.020c-.25.700-1.440 1.340-1.980 1.390-.510.050-1.150.070-1.860-.160a16 16 0 01-1.680-.620c-2.950-1.270-4.870-4.240-5.020-4.440-.150-.200-1.200-1.600-1.200-3.050 0-1.450.760-2.160 1.030-2.450.270-.300.590-.370.790-.370h.570c.180 0 .430-.070.670.510.250.600.840 2.050.910 2.200.070.150.120.320.020.520-.100.200-.150.320-.300.490-.150.170-.310.380-.440.510-.150.150-.300.310-.130.600.170.300.770 1.270 1.650 2.050 1.130 1 2.080 1.320 2.380 1.470.300.150.470.120.640-.070.170-.200.740-.860.940-1.160.200-.300.400-.250.670-.150.270.100 1.740.820 2.040.970.300.150.500.220.570.350.080.120.080.720-.170 1.420z"/></svg>
+          Confirm on WhatsApp
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Contact -->
+<section class="section alt" id="contact">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <h2>Reach out</h2>
+      <p>Questions, feedback or a feature idea? Send a message.</p>
+    </div>
+    <div class="contact-grid">
+      <div class="c-card rv">
+        <div class="ic g"><svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M12.040 2a9.900 9.900 0 00-8.480 14.980L2 22l5.180-1.510A9.900 9.900 0 1012.040 2zm5.770 14.020c-.25.700-1.440 1.340-1.980 1.390-.510.050-1.150.070-1.860-.160a16 16 0 01-1.680-.620c-2.950-1.270-4.870-4.240-5.020-4.440-.150-.200-1.200-1.600-1.200-3.050 0-1.450.760-2.160 1.030-2.450.270-.300.590-.370.790-.370h.570c.180 0 .430-.070.670.510.250.600.840 2.050.910 2.200.070.150.120.320.020.520-.100.200-.150.320-.300.490-.150.170-.310.380-.440.510-.150.150-.300.310-.130.600.170.300.770 1.270 1.650 2.050 1.130 1 2.080 1.320 2.380 1.470.300.150.470.120.640-.070.170-.200.740-.860.940-1.160.200-.300.400-.250.670-.150.270.100 1.740.820 2.040.970.300.150.500.220.570.350.080.120.080.720-.170 1.420z"/></svg></div>
+        <h3>WhatsApp</h3>
+        <p data-text="phone">+254 714 104 737</p>
+        <a class="btn wa" data-link="wa" href="#contact" target="_blank" rel="noopener noreferrer">Chat on WhatsApp</a>
+      </div>
+      <div class="c-card rv" style="--d:.1s">
+        <div class="ic b"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M3 8l9 6 9-6"/></svg></div>
+        <h3>Email</h3>
+        <p data-text="email">eliyasande65@gmail.com</p>
+        <a class="btn dark" data-link="mail" href="#contact">Send an email</a>
+      </div>
+    </div>
+  </div>
+</section>
 </main>
 
-<footer class="site-footer">
+<footer>
   <div class="wrap">
-    <span class="copy">© 2026 Eliya Sande · Busia County, Kenya</span>
-    <div class="foot-links">
-      <a href="mailto:eliyasande65@gmail.com">Email</a>
-      <a href="https://wa.me/254714104737" target="_blank" rel="noopener">WhatsApp</a>
-      <a href="tel:+254714104737">Call</a>
+    <div class="f-flag" aria-hidden="true"><i style="background:#fff"></i><i style="background:#0a0a0a"></i><i style="background:#bb0000"></i><i style="background:#006600"></i></div>
+    <a href="#home" class="brand">Poster Studio</a>
+    <div class="f-links">
+      <a href="#features">Features</a>
+      <a href="#get">Download</a>
+      <a href="#donate">Donate</a>
+      <a href="#contact">Contact</a>
+      <a href="#get" data-link="github" target="_blank" rel="noopener noreferrer">GitHub</a>
     </div>
+    <small>&copy; <span id="yr">2026</span> Poster Studio. Free to use. Made in Kenya.</small>
   </div>
 </footer>
 
-<div class="install-banner" id="installBanner">
-  <p>Install this site as an app for quick offline access.</p>
-  <button class="btn btn-primary" id="installBtn">Install</button>
-  <button class="install-dismiss" id="installDismiss" aria-label="Dismiss">✕</button>
-</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-<script src="js/main.js"></script>
+<noscript><p style="position:fixed;bottom:0;left:0;right:0;background:#1a1535;color:#fff;padding:12px;margin:0">Please enable JavaScript so the download and contact links work.</p></noscript>
+
+<!-- Edit all links in links.js -->
+<script src="links.js"></script>
+<script>
+(function(){
+  "use strict";
+  var L = Object.assign({
+    apkDownload:"", githubPage:"", version:"1.0",
+    whatsappNumber:"254714104737", donationNumberDisplay:"+254 714 104 737",
+    email:"eliyasande65@gmail.com"
+  }, window.LINKS || {});
+
+  var $  = function(s,r){return (r||document).querySelector(s)};
+  var $$ = function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))};
+  var isSet = function(u){return !!u && !/YOUR-/i.test(u)};
+
+  /* ---- Loader ---- */
+  var loader = $("#loader"), started = Date.now(), loaded = document.readyState === "complete";
+  function hideLoader(){
+    var wait = Math.max(0, 2500 - (Date.now() - started));
+    setTimeout(function(){ loader.classList.add("done"); setTimeout(function(){ loader.remove(); }, 800); }, wait);
+  }
+  if (loaded) hideLoader(); else window.addEventListener("load", hideLoader);
+  setTimeout(function(){ if (document.body.contains(loader)) hideLoader(); }, 6000);
+
+  /* ---- Toast ---- */
+  var toastEl = $("#toast"), tt;
+  function toast(msg){
+    toastEl.textContent = msg; toastEl.classList.add("show");
+    clearTimeout(tt); tt = setTimeout(function(){ toastEl.classList.remove("show"); }, 3200);
+  }
+
+  /* ---- Text from links.js ---- */
+  $$('[data-text="version"]').forEach(function(e){ e.textContent = L.version; });
+  $$('[data-text="phone"]').forEach(function(e){ e.textContent = L.donationNumberDisplay; });
+  $$('[data-text="email"]').forEach(function(e){ e.textContent = L.email; });
+  $("#donNumber").textContent = L.donationNumberDisplay;
+  $("#yr").textContent = new Date().getFullYear();
+
+  /* ---- Links ---- */
+  var ghUrl = isSet(L.githubPage) ? L.githubPage : L.apkDownload;
+  $$('[data-link="apk"]').forEach(function(a){
+    a.href = isSet(L.apkDownload) ? L.apkDownload : "#get";
+    if (isSet(L.apkDownload)){ a.target = "_blank"; a.rel = "noopener noreferrer"; }
+    a.addEventListener("click", function(e){
+      if (!isSet(L.apkDownload)){
+        e.preventDefault();
+        toast("The download link is not available yet. Please check back soon.");
+      } else { toast("Taking you to GitHub…"); }
+    });
+  });
+  $$('[data-link="github"]').forEach(function(a){
+    if (isSet(ghUrl)) a.href = ghUrl;
+    a.addEventListener("click", function(e){
+      if (!isSet(ghUrl)){ e.preventDefault(); toast("The GitHub page is not available yet."); }
+    });
+  });
+  var waBase = "https://wa.me/" + L.whatsappNumber;
+  $$('[data-link="wa"]').forEach(function(a){
+    a.href = waBase + "?text=" + encodeURIComponent("Hello, I am messaging about Poster Studio.");
+  });
+  $$('[data-link="mail"]').forEach(function(a){
+    a.href = "mailto:" + L.email + "?subject=" + encodeURIComponent("Poster Studio");
+  });
+
+  /* ---- Donation ---- */
+  var donWa = $("#donWa");
+  function setDonMsg(amt){
+    var msg = amt ? "Hello, I have just donated KES " + amt + " to support Poster Studio." :
+                    "Hello, I have just donated to support Poster Studio.";
+    donWa.href = waBase + "?text=" + encodeURIComponent(msg);
+  }
+  setDonMsg("");
+  $$(".amt").forEach(function(b){
+    b.addEventListener("click", function(){
+      $$(".amt").forEach(function(x){ x.classList.remove("sel"); });
+      b.classList.add("sel");
+      setDonMsg(b.getAttribute("data-amt"));
+    });
+  });
+  $("#copyBtn").addEventListener("click", function(){
+    var num = L.donationNumberDisplay.replace(/\s/g, "");
+    function ok(){ toast("Number copied: " + L.donationNumberDisplay); }
+    function fallback(){
+      var t = document.createElement("textarea"); t.value = num; t.style.position = "fixed"; t.style.opacity = "0";
+      document.body.appendChild(t); t.select();
+      try { document.execCommand("copy"); ok(); } catch(e){ toast("Press and hold the number to copy it."); }
+      t.remove();
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(num).then(ok, fallback); }
+    else fallback();
+  });
+
+  /* ---- Button press ripple ---- */
+  document.addEventListener("click", function(e){
+    var b = e.target.closest(".btn"); if (!b) return;
+    var r = b.getBoundingClientRect(), s = Math.max(r.width, r.height), d = document.createElement("span");
+    d.className = "ripple"; d.style.width = d.style.height = s + "px";
+    d.style.left = (e.clientX - r.left - s/2) + "px"; d.style.top = (e.clientY - r.top - s/2) + "px";
+    b.appendChild(d); setTimeout(function(){ d.remove(); }, 700);
+  });
+
+  /* ---- Mobile menu ---- */
+  var burger = $("#burger"), nav = $("#nav");
+  function closeNav(){ nav.classList.remove("open"); burger.setAttribute("aria-expanded","false"); burger.setAttribute("aria-label","Open menu"); }
+  burger.addEventListener("click", function(){
+    var open = nav.classList.toggle("open");
+    burger.setAttribute("aria-expanded", open); burger.setAttribute("aria-label", open ? "Close menu" : "Open menu");
+  });
+  $$("#nav a").forEach(function(a){ a.addEventListener("click", closeNav); });
+
+  /* ---- Scroll: progress bar, header shadow, active link ---- */
+  var bar = $("#progress"), header = $(".site-header");
+  var secs = ["home","features","get","donate","contact"].map(function(id){ return document.getElementById(id); });
+  var links = $$("#nav a");
+  function onScroll(){
+    var h = document.documentElement, max = h.scrollHeight - h.clientHeight;
+    bar.style.width = (max > 0 ? (h.scrollTop / max) * 100 : 0) + "%";
+    header.classList.toggle("scrolled", h.scrollTop > 10);
+    var cur = 0, y = h.scrollTop + 140;
+    secs.forEach(function(s,i){ if (s && s.offsetTop <= y) cur = i; });
+    links.forEach(function(a,i){ a.classList.toggle("active", i === cur); });
+  }
+  window.addEventListener("scroll", onScroll, {passive:true}); onScroll();
+
+  /* ---- Reveal on scroll ---- */
+  var items = $$(".rv, .sec-head");
+  if ("IntersectionObserver" in window){
+    var io = new IntersectionObserver(function(es){
+      es.forEach(function(en){ if (en.isIntersecting){ en.target.classList.add("in"); io.unobserve(en.target); } });
+    }, {threshold:.14, rootMargin:"0px 0px -40px 0px"});
+    items.forEach(function(i){ io.observe(i); });
+  } else { items.forEach(function(i){ i.classList.add("in"); }); }
+})();
+</script>
 </body>
 </html>
