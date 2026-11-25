@@ -15,6 +15,9 @@ window.LINKS = {
         Leave as "" to reuse the APK link above. */
   githubPage: "https://github.com/eliyasande65-lang/Posterstudio",
 
+  /* 2b. VIDEOGRAB DOWNLOAD — direct link to the VideoGrab release (a .zip: unzip, then install the APK inside). */
+  videograbDownload: "https://github.com/eliyasande65-lang/videograb/releases/download/Downloader/videograb-apk.3.zip",
+
   /* 3. VERSION shown on the download button area */
   version: "1.0",
 
