@@ -179,6 +179,16 @@ p{margin:0}
 .step .n{width:40px;height:40px;border-radius:50%;background:var(--mix);color:#fff;display:grid;place-items:center;font-family:var(--head);font-weight:700}
 .step p{font-size:.98rem;color:#d3dce6}
 
+
+/* videograb */
+.vg-card{max-width:760px;margin:0 auto;background:#fff;border:1px solid var(--line);border-top:4px solid var(--green);border-radius:20px;padding:32px 20px;display:flex;flex-direction:column;align-items:center;gap:16px;box-shadow:0 30px 50px -36px rgba(26,21,53,.55);transition:transform .3s,box-shadow .3s}
+.vg-card:hover{transform:translateY(-6px);box-shadow:0 34px 54px -32px rgba(26,21,53,.6)}
+.vg-ic{width:68px;height:68px;border-radius:20px;background:var(--mix);color:#fff;display:grid;place-items:center;box-shadow:0 10px 22px -10px rgba(11,143,160,.9);animation:float 5s ease-in-out infinite}
+.vg-card .tag{border-color:var(--line);color:var(--navy)}
+.vg-card .meta{display:flex;flex-wrap:wrap;justify-content:center;gap:8px}
+.vg-card p{color:var(--muted);max-width:52ch}
+.vg-card .vg-note{font-size:.92rem;background:#f1faf7;border:1px dashed var(--teal);border-radius:12px;padding:10px 14px;color:var(--navy)}
+
 /* donate */
 .donate-card{max-width:720px;margin:0 auto;background:#fff;border:1px solid var(--line);border-radius:22px;padding:34px 20px;display:flex;flex-direction:column;align-items:center;gap:18px;box-shadow:0 30px 50px -36px rgba(26,21,53,.55);position:relative;overflow:hidden}
 .donate-card::before{content:"";position:absolute;left:0;right:0;top:0;height:6px;background:linear-gradient(90deg,#0a0a0a 0 33%,#bb0000 33% 66%,#006600 66%)}
@@ -319,6 +329,7 @@ footer small{display:block;color:#aab6c2;font-size:.9rem;margin-top:6px}
           <li><a href="#home" class="active">Home</a></li>
           <li><a href="#features">Features</a></li>
           <li><a href="#get">Download</a></li>
+          <li><a href="#videograb">VideoGrab</a></li>
           <li><a href="#donate">Donate</a></li>
           <li><a href="#contact">Contact</a></li>
         </ul>
@@ -442,6 +453,31 @@ footer small{display:block;color:#aab6c2;font-size:.9rem;margin-top:6px}
   </div>
 </section>
 
+<!-- VideoGrab -->
+<section class="section" id="videograb">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <h2>Also get VideoGrab</h2>
+      <p>A free Android app that downloads videos when you paste a link.</p>
+    </div>
+    <div class="vg-card rv">
+      <div class="vg-ic" aria-hidden="true"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M12 9v5m0 0l-2-2m2 2l2-2"/></svg></div>
+      <h3>VideoGrab</h3>
+      <div class="meta">
+        <span class="tag">Android</span>
+        <span class="tag">Free</span>
+        <span class="tag">Paste a link</span>
+      </div>
+      <p>Copy a video link, paste it into VideoGrab and save the video to your phone.</p>
+      <a class="btn primary big" data-link="videograb" href="#videograb">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0l-5-5m5 5l5-5M4 20h16"/></svg>
+        Download VideoGrab
+      </a>
+      <p class="vg-note">The download is a .zip file. Unzip it first, then open the APK inside to install.</p>
+    </div>
+  </div>
+</section>
+
 <!-- Donate -->
 <section class="section" id="donate">
   <div class="wrap">
@@ -509,6 +545,7 @@ footer small{display:block;color:#aab6c2;font-size:.9rem;margin-top:6px}
     <div class="f-links">
       <a href="#features">Features</a>
       <a href="#get">Download</a>
+      <a href="#videograb">VideoGrab</a>
       <a href="#donate">Donate</a>
       <a href="#contact">Contact</a>
       <a href="#get" data-link="github" target="_blank" rel="noopener noreferrer">GitHub</a>
@@ -527,7 +564,7 @@ footer small{display:block;color:#aab6c2;font-size:.9rem;margin-top:6px}
 (function(){
   "use strict";
   var L = Object.assign({
-    apkDownload:"", githubPage:"", version:"1.0",
+    apkDownload:"", videograbDownload:"", githubPage:"", version:"1.0",
     whatsappNumber:"254714104737", donationNumberDisplay:"+254 714 104 737",
     email:"eliyasande65@gmail.com"
   }, window.LINKS || {});
@@ -569,6 +606,15 @@ footer small{display:block;color:#aab6c2;font-size:.9rem;margin-top:6px}
         e.preventDefault();
         toast("The download link is not available yet. Please check back soon.");
       } else { toast("Taking you to GitHub…"); }
+    });
+  });
+  $$('[data-link="videograb"]').forEach(function(a){
+    a.href = isSet(L.videograbDownload) ? L.videograbDownload : "#videograb";
+    a.addEventListener("click", function(e){
+      if (!isSet(L.videograbDownload)){
+        e.preventDefault();
+        toast("The VideoGrab link is not available yet. Please check back soon.");
+      } else { toast("Starting VideoGrab download…"); }
     });
   });
   $$('[data-link="github"]').forEach(function(a){
@@ -633,7 +679,7 @@ footer small{display:block;color:#aab6c2;font-size:.9rem;margin-top:6px}
 
   /* ---- Scroll: progress bar, header shadow, active link ---- */
   var bar = $("#progress"), header = $(".site-header");
-  var secs = ["home","features","get","donate","contact"].map(function(id){ return document.getElementById(id); });
+  var secs = ["home","features","get","videograb","donate","contact"].map(function(id){ return document.getElementById(id); });
   var links = $$("#nav a");
   function onScroll(){
     var h = document.documentElement, max = h.scrollHeight - h.clientHeight;
@@ -657,3 +703,4 @@ footer small{display:block;color:#aab6c2;font-size:.9rem;margin-top:6px}
 </script>
 </body>
 </html>
+
